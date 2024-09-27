@@ -52,9 +52,10 @@ prompt = ChatPromptTemplate.from_messages(
                  {name} direct before they made {name}? First, find who
                  directed {name}. Then, look at their filmography. Find all the
                  feature-length movies they directed before {name}. Only 
-                 consider movies that were released. You have been given a wikipedia querying tool for this.
+                 consider movies that were released. 
+                 You have been given a wikipedia querying tool for this.
                  You can search for the directly for the director or their filmography.
-                 If the tool returns something that is not useful, do not use that input prompt again.
+                 If you need multiple searches, do not use the same search query.
                  Lastly, count up how many movies this is. 
                  Think step-by-step and write them down. When 
                  you have an answer, say, 'The number is: ' and give the
@@ -68,7 +69,7 @@ tools = load_tools(["wikipedia"], llm=model)
 agent = create_openai_tools_agent(model, tools, prompt)
 
 # agent = create_openai_tools_agent(model, tools, prompt)
-agent_executor = AgentExecutor(agent=agent, tools=tools, max_iterations=15)
+agent_executor = AgentExecutor(agent=agent, tools=tools, max_iterations=7)
 
 def prior_films(year, film):
   resp = agent_executor.invoke({"year": year, "name": film})
