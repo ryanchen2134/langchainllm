@@ -65,7 +65,7 @@ tools = load_tools(["wikipedia"], llm=model)
 agent = create_openai_tools_agent(model, tools, prompt)
 
 # agent = create_openai_tools_agent(model, tools, prompt)
-agent_executor = AgentExecutor(agent=agent, tools=tools, max_iterations=6)
+agent_executor = AgentExecutor(agent=agent, tools=tools, max_iterations=24)
 
 def prior_films(year, film):
   resp = agent_executor.invoke({"year": year, "name": film})
