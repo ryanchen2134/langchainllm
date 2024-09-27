@@ -49,9 +49,7 @@ prompt = ChatPromptTemplate.from_messages(
     ]
 )
 def _modify_state_messages(state: AgentState):
-    return prompt.invoke({"messages": state["messages"]}).to_messages() + [
-        ("user", "Also say 'Pandamonium!' after the answer.")
-    ]
+    return prompt.invoke({"messages": state["messages"]}).to_messages()
 
 app = create_react_agent(model, tools, state_modifier=_modify_state_messages)
 
