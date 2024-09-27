@@ -46,14 +46,17 @@ model = ChatOpenAI( #gpt-4o-mini    #-2024-07-18
 prompt = ChatPromptTemplate.from_messages(
   [
     ("system", """You are a helpful research assistant, and your job is to
-                  retrieve information about movies and movie directors. Think
-                  through the questions you are asked step-by-step."""),
+                  retrieve information about movies and movie directors.
+                  Think through the questions you are asked step-by-step."""),
     ("human", """How many FEATURE FILMS did the director of the {year} movie 
                  {name} direct before they made {name}? First, find who
                  directed {name}. Then, look at their filmography. Find all the
                  feature-length movies they directed before {name}. Only 
-                 consider movies that were released. Lastly, count up how many 
-                 movies this is. Think step-by-step and write them down. When 
+                 consider movies that were released. You have been given a wikipedia querying tool for this.
+                 You can search for the directly for the director or their filmography.
+                 If the tool returns something that is not useful, do not use that input prompt again.
+                 Lastly, count up how many movies this is. 
+                 Think step-by-step and write them down. When 
                  you have an answer, say, 'The number is: ' and give the
                  answer."""),
     MessagesPlaceholder("agent_scratchpad")
@@ -65,10 +68,8 @@ tools = load_tools(["wikipedia"], llm=model)
 agent = create_openai_tools_agent(model, tools, prompt)
 
 # agent = create_openai_tools_agent(model, tools, prompt)
-agent_executor = AgentExecutor(agent=agent, tools=tools, max_iterations=24)
+agent_executor = AgentExecutor(agent=agent, tools=tools, max_iterations=15)
 
 def prior_films(year, film):
   resp = agent_executor.invoke({"year": year, "name": film})
   return(resp['output'])
-
-print(prior_films(2000, "The Matrix"))
